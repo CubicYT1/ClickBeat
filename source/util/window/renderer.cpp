@@ -29,7 +29,7 @@ void window::render() {
 
     for (int zIndex = lowestZ; zIndex <= highestZ; zIndex++) {
         for (int i = 0; i < game::currentScene->objects.getLength(); i++) {
-            if (game::currentScene->objects.byindex(i)->zIndex == zIndex) {
+            if (game::currentScene->objects.byindex(i)->zIndex == zIndex && game::currentScene->objects.byindex(i)->visible) {
                 window.draw(*game::currentScene->objects.byindex(i)->getDrawable());
             }
         }

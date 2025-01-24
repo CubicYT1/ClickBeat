@@ -11,6 +11,8 @@ int main() {
         window::handleEvents();
         game::update();
         window::render();
+        
+        sf::sleep(sf::seconds(game::getDeltaTime()));
     }
     return 0;
 }

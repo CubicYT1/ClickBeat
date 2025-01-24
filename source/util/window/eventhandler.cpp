@@ -13,6 +13,7 @@ void window::handleEvents() {
         }
         else if (const sf::Event::KeyPressed *keyEvent = event->getIf<sf::Event::KeyPressed>()) {
             std::cout << "Key Pressed: " << (std::string)sf::Keyboard::getDescription(keyEvent->scancode) << "\n";
+            game::keyQueue.push(keyEvent->code);
         }
         else if (const sf::Event::MouseMoved *moveEvent = event->getIf<sf::Event::MouseMoved>()) {
             std::cout << "Mouse moved: X:" << moveEvent->position.x << " Y:" << moveEvent->position.y << "\n";

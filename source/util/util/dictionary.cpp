@@ -10,7 +10,11 @@ private:
 
 public:
     Val &operator[](const Key key) {
-        return vals[std::find(keys.begin(), keys.end(), key)];
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys[i] == key) {
+                return vals[i];
+            }
+        }
     }
 
     void add(const Key key, const Val val) {
