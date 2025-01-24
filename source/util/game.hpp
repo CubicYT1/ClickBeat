@@ -1,11 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 namespace game {
     class Object;
     class Scene;
 
     Scene *currentScene = nullptr;
+    sf::Music music;
 
     void update();
 };

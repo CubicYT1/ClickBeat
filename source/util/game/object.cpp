@@ -6,5 +6,5 @@ public:
     bool visible = true;
 
     virtual void update() {}
-    virtual sf::Drawable &getDrawable() {}
+    virtual sf::Drawable *getDrawable() {}
 };

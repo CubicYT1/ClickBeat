@@ -1,27 +1,30 @@
 #include "../util.hpp"
 
+#include <iostream>
+#include <vector>
+
 template <typename Key, typename Val> class util::Dictionary {
 private:
-    List<Key> keys;
-    List<Val> vals;
+    std::vector<Key> keys;
+    std::vector<Val> vals;
 
 public:
     Val &operator[](const Key key) {
-        return vals[keys.indexOf(key)];
+        return vals[std::find(keys.begin(), keys.end(), key)];
     }
 
     void add(const Key key, const Val val) {
-        keys.add(key);
-        vals.add(val);
+        keys.push_back(key);
+        vals.push_back(val);
     }
 
     void remove(const unsigned int index) {
-        keys.remove(index);
-        vals.remove(index);
+        keys.erase(keys.begin() + index);
+        vals.erase(vals.begin() + index);
     }
 
     int getLength() {
-        return keys.getLength();
+        return keys.size();
     }
 
     Val &byindex(const unsigned int index) {

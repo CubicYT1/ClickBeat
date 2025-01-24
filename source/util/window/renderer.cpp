@@ -22,7 +22,7 @@ void window::render() {
         if (objectZ < lowestZ) {
             lowestZ = objectZ;
         }
-        else if (objectZ < lowestZ) {
+        else if (objectZ > highestZ) {
             highestZ = objectZ;
         }
     }
@@ -30,7 +30,7 @@ void window::render() {
     for (int zIndex = lowestZ; zIndex <= highestZ; zIndex++) {
         for (int i = 0; i < game::currentScene->objects.getLength(); i++) {
             if (game::currentScene->objects.byindex(i)->zIndex == zIndex) {
-                window.draw(game::currentScene->objects.byindex(i)->getDrawable());
+                window.draw(*game::currentScene->objects.byindex(i)->getDrawable());
             }
         }
     }
