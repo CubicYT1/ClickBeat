@@ -4,6 +4,8 @@
 
 namespace scenes {
     class Title;
+    class Menu;
 }
 
 #include "scenes/title.cpp"
+#include "scenes/menu.cpp"

@@ -1,3 +1,4 @@
+#pragma
 #include "../objects.hpp"
 
 class objects::TitleText : public game::Object {

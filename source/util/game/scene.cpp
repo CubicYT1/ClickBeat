@@ -6,4 +6,10 @@ public:
     util::Dictionary<std::string, game::Object*> objects;
 
     virtual void update() {}
+
+    ~Scene() {
+        for (int i = 0; i < objects.getLength(); i++) {
+            delete objects.byindex(i);
+        }
+    }
 };
