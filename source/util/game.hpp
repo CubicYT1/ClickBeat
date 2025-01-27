@@ -23,6 +23,10 @@ namespace game {
 
     void update();
     float getDeltaTime();
+
+    namespace player {
+        sf::Color bgColor = {0, 0, 150, 255};
+    }
 };
 
 #include "game/object.cpp"

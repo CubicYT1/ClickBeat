@@ -11,7 +11,7 @@ void window::render() {
         float scaleY = (float)window::window.getSize().y / bg.getTexture().getSize().y;
         bg.setScale({scaleX, scaleY});
 
-        bg.setColor({0, 0, 150});
+        bg.setColor(game::player::bgColor);
     }
     window.draw(bg);
 

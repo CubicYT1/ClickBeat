@@ -8,10 +8,11 @@ private:
     sf::Sprite *sprite = nullptr;
 
 public:
+    int scaledSizeX;
+
     SongCover() {
         visible = true;
         texture.loadFromFile("assets/images/cover.png");
-        texture.resize({1000, 1000});
 
         sprite = new sf::Sprite(texture);
     }
@@ -21,13 +22,17 @@ public:
     }
 
     void update() override {
-        sprite->setOrigin({500, 500});
+        sf::Vector2f winSize = (sf::Vector2f)window::window.getSize();
+        sf::Vector2f textureSize = (sf::Vector2f)texture.getSize();
 
-        float scale = (float)window::window.getSize().x / 1000;
-        sprite->setScale({scale, scale});
+        float scaleX = winSize.x / textureSize.x / 5;
+        float scaleY = winSize.x / textureSize.y / 5;
+        scaledSizeX = textureSize.x * scaleX;
 
-        float yPos = window::window.getSize().y / 2;
-        sprite->setPosition({500, yPos});
+        sprite->setScale({scaleX, scaleY});
+
+        float yPos = window::window.getSize().y / 2 - textureSize.y * scaleY / 2;
+        sprite->setPosition({30, 30});
     }
 
     sf::Drawable *getDrawable() override {
