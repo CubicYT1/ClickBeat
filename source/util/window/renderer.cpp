@@ -18,7 +18,7 @@ void window::render() {
     int lowestZ = 0;
     int highestZ = 0;
     for (int i = 0; i < game::currentScene->objects.getLength(); i++) {
-        const int objectZ = game::currentScene->objects.byindex(i)->zIndex;
+        const int objectZ = game::currentScene->objects.byIndex(i)->zIndex;
         if (objectZ < lowestZ) {
             lowestZ = objectZ;
         }
@@ -29,8 +29,8 @@ void window::render() {
 
     for (int zIndex = lowestZ; zIndex <= highestZ; zIndex++) {
         for (int i = 0; i < game::currentScene->objects.getLength(); i++) {
-            if (game::currentScene->objects.byindex(i)->zIndex == zIndex && game::currentScene->objects.byindex(i)->visible) {
-                window.draw(*game::currentScene->objects.byindex(i)->getDrawable());
+            if (game::currentScene->objects.byIndex(i)->zIndex == zIndex && game::currentScene->objects.byIndex(i)->visible) {
+                window.draw(*game::currentScene->objects.byIndex(i)->getDrawable());
             }
         }
     }

@@ -31,7 +31,7 @@ public:
             sf::Keyboard::Key key = game::keyQueue.front();
 
             if (key == sf::Keyboard::Key::Space && !started) {
-                game::interpolationData.push_back({&alpha, 0, 500});
+                game::interpolationData.push_back({&alpha, -255, -500});
 
                 objects["text"]->visible = false;
                 started = true;

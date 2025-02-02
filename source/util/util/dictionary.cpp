@@ -31,7 +31,7 @@ public:
         return keys.size();
     }
 
-    Val &byindex(const unsigned int index) {
+    Val &byIndex(const unsigned int index) {
         return vals[index];
     }
 };

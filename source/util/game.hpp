@@ -12,7 +12,9 @@ namespace game {
         int *reference;
         int target;
         int speed; 
-        float value = *reference;
+        int added = 0;
+        float decimal = 0;
+        int original = *reference;
     };
 
     int fps = 100;
@@ -25,7 +27,7 @@ namespace game {
     float getDeltaTime();
 
     namespace player {
-        sf::Color bgColor = {0, 0, 150, 255};
+        sf::Color bgColor = {150, 0, 0, 255};
     }
 };
 
