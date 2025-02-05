@@ -27,7 +27,7 @@ namespace game {
     float getDeltaTime();
 
     namespace player {
-        sf::Color bgColor = {150, 0, 0, 255};
+        sf::Color bgColor = {0, 0, 150, 255};
     }
 };
 

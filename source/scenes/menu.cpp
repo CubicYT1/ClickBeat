@@ -31,8 +31,10 @@ public:
         objects.add("line", new objects::templates::Rect({2, 2}, sf::Color::White));
         sf::RectangleShape *line = (sf::RectangleShape*)objects["line"]->getDrawable();
 
-        objects.add("reactiveBg", new objects::BgReact());
-        ((objects::BgReact*)objects["reactiveBg"])->zIndex = -1;
+        objects.add("flash", new objects::BgFlash());
+
+        objects.add("fade", new objects::BlackFade());
+        ((objects::BlackFade*)objects["fade"])->fadeOut();
 
         for (int i = 0; i < songs.size(); i++) {
             objects.add(std::to_string(i), new objects::SongText(songs[i], songFont));
@@ -78,6 +80,7 @@ public:
                 }
 
                 scrollSfx.play();
+                ((objects::BgFlash*)objects["flash"])->flash();
                 ChangeMusic();
             }
             game::keyQueue.pop();

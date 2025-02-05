@@ -6,7 +6,8 @@ namespace objects {
     class TitleText;
     class SongCover;
     class SongText;
-    class BgReact;
+    class BgFlash;
+    class BlackFade;
 
     namespace templates {
         class Rect;
@@ -21,4 +22,5 @@ namespace objects {
 #include "objects/titletext.cpp"
 #include "objects/songcover.cpp"
 #include "objects/songtext.cpp"
-#include "objects/bgreact.cpp"
+#include "objects/bgflash.cpp"
+#include "objects/blackfade.cpp"

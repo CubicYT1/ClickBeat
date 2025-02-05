@@ -9,11 +9,16 @@ class scenes::Title : public game::Scene {
 private:
     bool started = false;
     int alpha = 255;
+    sf::Clock clock;
 
 public:
     Title() {
         objects.add("logo", new objects::TitleLogo());
         objects.add("text", new objects::TitleText());
+        objects.add("flash", new objects::BgFlash());
+        objects.add("fade", new objects::BlackFade());
+
+        clock.reset();
 
         game::music = sf::Music("assets/sound/menu.wav");
         game::music.setLooping(true);
@@ -21,7 +26,7 @@ public:
     }
 
     void update() override {
-        if (alpha == 0) {
+        if (clock.getElapsedTime().asSeconds() >= 1) {
             game::currentScene = new scenes::Menu();
             delete this;
             return;
@@ -31,9 +36,11 @@ public:
             sf::Keyboard::Key key = game::keyQueue.front();
 
             if (key == sf::Keyboard::Key::Space && !started) {
-                game::interpolationData.push_back({&alpha, -255, -500});
+                ((objects::BgFlash*)objects["flash"])->flash();
+                ((objects::BlackFade*)objects["fade"])->fadeIn();
 
                 objects["text"]->visible = false;
+                clock.start();
                 started = true;
             }
             game::keyQueue.pop();
