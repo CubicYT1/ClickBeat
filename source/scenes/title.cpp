@@ -29,7 +29,6 @@ public:
         if (clock.getElapsedTime().asSeconds() >= 1) {
             game::currentScene = new scenes::Menu();
             delete this;
-            return;
         }
 
         while (game::keyQueue.size()) {
@@ -44,6 +43,10 @@ public:
                 started = true;
             }
             game::keyQueue.pop();
+        }
+
+        while (game::mouseQueue.size()) {
+            game::mouseQueue.pop();
         }
 
         ((sf::Sprite*)objects["logo"]->getDrawable())->setColor({255, 255, 255, alpha});

@@ -10,7 +10,11 @@ public:
         rectangle->setFillColor(color);
     }
 
-    sf::Drawable *getDrawable() {
+    ~Rect() {
+        delete rectangle;
+    }
+
+    sf::Drawable *getDrawable() override {
         return rectangle;
     }
 };

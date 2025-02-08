@@ -7,6 +7,7 @@
 namespace game {
     class Object;
     class Scene;
+    class Song;
 
     struct InterpolationData {
         int *reference;
@@ -21,10 +22,13 @@ namespace game {
     Scene *currentScene = nullptr;
     sf::Music music;
     std::queue<sf::Keyboard::Key> keyQueue;
+    std::queue<sf::Mouse::Button> mouseQueue;
     std::vector<InterpolationData> interpolationData;
+    sf::Vector2i mousePosition;
 
     void update();
     float getDeltaTime();
+    std::vector<Song> getSongs();
 
     namespace player {
         sf::Color bgColor = {0, 0, 150, 255};
@@ -34,4 +38,5 @@ namespace game {
 #include "game/object.cpp"
 #include "game/scene.cpp"
 #include "game/updater.cpp"
-#include "game/deltatime.cpp"
+#include "game/functions.cpp"
+#include "game/song.cpp"

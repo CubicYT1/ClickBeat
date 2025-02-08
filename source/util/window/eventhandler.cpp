@@ -22,6 +22,11 @@ void window::handleEvents() {
         }
         else if (const sf::Event::MouseMoved *moveEvent = event->getIf<sf::Event::MouseMoved>()) {
             std::cout << "Mouse moved: X:" << moveEvent->position.x << " Y:" << moveEvent->position.y << "\n";
+            game::mousePosition = moveEvent->position;
+        }
+        else if (const sf::Event::MouseButtonPressed *mouseEvent = event->getIf<sf::Event::MouseButtonPressed>()) {
+            std::cout << "Mouse button pressed\n";
+            game::mouseQueue.push(mouseEvent->button);
         }
     }
 }

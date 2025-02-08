@@ -1,4 +1,5 @@
 #include "../objects.hpp"
+#include "../scenes.hpp"
 
 #include <iostream>
 
@@ -9,6 +10,7 @@ private:
 
 public:
     int scaledSizeX;
+    int scaledSizeY;
 
     SongCover() {
         visible = true;
@@ -28,11 +30,17 @@ public:
         float scaleX = winSize.x / textureSize.x / 5;
         float scaleY = winSize.x / textureSize.y / 5;
         scaledSizeX = textureSize.x * scaleX;
+        scaledSizeY = textureSize.y * scaleY;
 
         sprite->setScale({scaleX, scaleY});
 
         float yPos = window::window.getSize().y / 2 - textureSize.y * scaleY / 2;
         sprite->setPosition({30, 30});
+    }
+
+    void change(const std::string path) {
+        texture = sf::Texture(path);
+        sprite = new sf::Sprite(texture);
     }
 
     sf::Drawable *getDrawable() override {
