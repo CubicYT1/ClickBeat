@@ -1,13 +1,16 @@
 #pragma once
 #include "../scenes.hpp"
+#include "../util.hpp"
+#include "../objects.hpp"
 
 #include <vector>
 
 class scenes::Menu : public game::Scene {
 private:
+    int selectedIndex = 0;
+
     sf::Font songFont;
     std::vector<game::Song> songs;
-    int selectedIndex = 0;
     sf::Music scrollSfx;
 
 public:
@@ -37,7 +40,6 @@ public:
 
         sf::Text *duration = (sf::Text*)objects["duration"]->getDrawable();
         duration->setCharacterSize(20);
-        duration->setOutlineThickness(2);
 
         for (int i = 0; i < songs.size(); i++) {
             objects.add(std::to_string(i), new objects::SongText(songs[i].getName(), songFont));
@@ -88,9 +90,11 @@ public:
                 ChangeSong();
             }
             else if (key == sf::Keyboard::Key::F12) {
-                game::currentScene = new scenes::LevelEditor();
-                delete this;
-                return;
+                scenes::editor(songs[selectedIndex]);
+            }
+            else if (key == sf::Keyboard::Key::Escape) {
+                ((objects::BlackFade*)objects["fade"])->fadeIn();
+                scenes::title();
             }
 
             game::keyQueue.pop();
@@ -108,14 +112,18 @@ public:
         
         {
             sf::Text *duration = (sf::Text*)objects["duration"]->getDrawable();
-            duration->setOrigin({duration->getLocalBounds().size.x / 2, duration->getLocalBounds().size.y / 2});
-            duration->setPosition({songCover->scaledSizeX / 2 + 30, songCover->scaledSizeY + 26});  
+            duration->setPosition({30, songCover->scaledSizeY + 60});  
+            duration->setCharacterSize(40);
+
+            float scale = (float)songCover->scaledSizeX / duration->getLocalBounds().size.x;
+
+            duration->setScale({scale, scale});
 
             int seconds = game::music.getDuration().asSeconds();
             int minutes = seconds / 60;
             seconds -= 60 * minutes;
 
-            duration->setString(std::to_string(minutes) + ":" + std::to_string(seconds));
+            duration->setString("LENGTH: " + std::to_string(minutes) + ":" + std::to_string(seconds) + "\n\nBPM: 140\n\nNPS: 9.54");
         }
         
         for (int i = 0; i < songs.size(); i++) {

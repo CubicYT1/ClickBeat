@@ -18,17 +18,22 @@ namespace game {
         int original = *reference;
     };
 
-    int fps = 100;
+    int fps = 240;
     Scene *currentScene = nullptr;
+    Scene *upcomingScene = nullptr;
     sf::Music music;
     std::queue<sf::Keyboard::Key> keyQueue;
     std::queue<sf::Mouse::Button> mouseQueue;
     std::vector<InterpolationData> interpolationData;
     sf::Vector2i mousePosition;
+    sf::Clock clock; 
 
     void update();
+    void title();
+    void menu();
+    void editor();
     float getDeltaTime();
-    std::vector<Song> getSongs();
+    std::vector<Song> getSongs();   
 
     namespace player {
         sf::Color bgColor = {0, 0, 150, 255};

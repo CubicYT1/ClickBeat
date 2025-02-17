@@ -3,22 +3,22 @@
 
 #include <iostream>
 
-int main(int argc, std::string argv[]) {
+int main() {
     window::window.setMinimumSize(window::minSize);
-
-    if (argc == 1) {
-       game::currentScene = new scenes::Title(); 
-    }
-    else {
-        game::currentScene = new scenes::LevelEditor();
-    }
-    
+    game::currentScene = new scenes::Title();
+    game::clock.start();
     
     while (window::window.isOpen()) {
         window::handleEvents();
         game::update();
         window::render();
         
+        if (game::upcomingScene != nullptr) {
+            delete game::currentScene;
+            game::currentScene = game::upcomingScene;
+            game::upcomingScene = nullptr;
+        }
+
         sf::sleep(sf::seconds(game::getDeltaTime()));
     }
     return 0;

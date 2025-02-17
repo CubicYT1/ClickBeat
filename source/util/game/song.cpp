@@ -23,6 +23,10 @@ public:
         return songPath;
     }
 
+    std::string getMapPath() {
+        return mapPath;
+    }
+
     Song(const std::string name) {
         this->name = name;
 

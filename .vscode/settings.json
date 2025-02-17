@@ -56,6 +56,21 @@
         "variant": "cpp",
         "iostream": "cpp",
         "unordered_set": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "any": "cpp",
+        "condition_variable": "cpp",
+        "coroutine": "cpp",
+        "csignal": "cpp",
+        "cstring": "cpp",
+        "list": "cpp",
+        "source_location": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "shared_mutex": "cpp",
+        "stdfloat": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "cinttypes": "cpp",
+        "typeindex": "cpp"
     }
 }

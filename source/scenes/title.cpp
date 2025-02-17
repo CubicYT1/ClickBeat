@@ -1,7 +1,7 @@
 #pragma once
 #include "../scenes.hpp"
 #include "../util.hpp"
-#include "menu.cpp"
+#include "../objects.hpp"
 
 #include <iostream>
 
@@ -9,6 +9,7 @@ class scenes::Title : public game::Scene {
 private:
     bool started = false;
     int alpha = 255;
+
     sf::Clock clock;
 
 public:
@@ -17,6 +18,8 @@ public:
         objects.add("text", new objects::TitleText());
         objects.add("flash", new objects::BgFlash());
         objects.add("fade", new objects::BlackFade());
+
+        ((objects::BlackFade*)objects["fade"])->fadeOut();
 
         clock.reset();
 
@@ -27,8 +30,7 @@ public:
 
     void update() override {
         if (clock.getElapsedTime().asSeconds() >= 1) {
-            game::currentScene = new scenes::Menu();
-            delete this;
+            scenes::menu();
         }
 
         while (game::keyQueue.size()) {

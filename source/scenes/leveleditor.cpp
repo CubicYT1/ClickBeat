@@ -1,15 +1,25 @@
 #pragma once
 #include "../scenes.hpp"
 #include "../util.hpp"
+#include "../objects.hpp"
+
+#include <fstream>
 
 class scenes::LevelEditor : public game::Scene {
 private:
     int bpm = 140;
     int typeIndex = 0;
-    int noteCount = 0;
-    
-    std::vector<sf::Vector2f> notePos;
+    int cursorXPos = 0;
+    int cursorYPos = 0;
+
+    bool preview = false;
+
+    float yOffset = 0;
+    int lastY = -1;
+
+    std::vector<sf::Vector2i> notePos;
     std::vector<objects::templates::Sprite*> notes;
+    std::vector<std::string> noteTypes;
 
     std::string type = "note";
     std::string types[3] = {
@@ -18,16 +28,22 @@ private:
         "obstacle"
     };
 
+    game::Song map;
+
     sf::Font font = sf::Font("assets/fonts/regular.ttf");
 
     sf::Music scrollSfx = sf::Music("assets/sound/scroll.mp3");
+    sf::Music beatSfx = sf::Music("assets/sound/beat.mp3");
+
+    sf::Clock clock;
 
     objects::templates::Text *info = new objects::templates::Text("", font);;
 
     objects::templates::Sprite *cursor = new objects::templates::Sprite("assets/images/note.png");
 
 public:
-    LevelEditor() {
+    LevelEditor(game::Song map) : map(map) {
+        std::cout << map.getMapPath();
         util::setOriginCenter(*(sf::Sprite*)cursor->getDrawable());
 
         objects.add("info", info);
@@ -36,6 +52,38 @@ public:
         game::music = sf::Music("assets/sound/editorbgm.mp3");
         game::music.setLooping(true);
         game::music.play();
+
+        std::string line;
+        std::ifstream reader;
+        reader.open(map.getMapPath());
+
+        std::getline(reader, line);
+
+        if (line == "") {
+            reader.close();
+            return;
+        }
+
+        bpm = std::stoi(line);
+
+        while (!reader.eof()) {
+            std::getline(reader, line);
+            objects::templates::Sprite *note = new objects::templates::Sprite("assets/images/" + line + ".png");
+            sf::Vector2i pos;
+
+            noteTypes.push_back(line);
+
+            std::getline(reader, line);
+            pos.x = std::stoi(line);
+
+            std::getline(reader, line);
+            pos.y = std::stoi(line);
+
+            notes.push_back(note);
+            notePos.push_back(pos);
+            objects.add("", note);
+        }
+        reader.close();
     }
 
     void update() override {
@@ -44,19 +92,39 @@ public:
         while (game::mouseQueue.size()) {
             const sf::Mouse::Button button = game::mouseQueue.front();
 
-            if (button == sf::Mouse::Button::Left) {
-                float xPos = (float)game::mousePosition.x / (float)window::window.getSize().x;
-                float yPos = game::mousePosition.y;
+            if (button == sf::Mouse::Button::Left && !preview) {
+                bool deleted = false;
 
-                objects::templates::Sprite *note = new objects::templates::Sprite("assets/images/" + type + ".png");
+                int index = 0;
+                for (sf::Vector2i note : notePos) {
+                    if (note.x == cursorXPos && note.y == cursorYPos) {
+                        notes[index]->zIndex = -1;
 
-                notes.push_back(note);
-                notePos.push_back({xPos, yPos});
+                        for (int i = 0; i < objects.getLength(); i++) {
+                            if (objects.byIndex(i)->zIndex == -1) {
+                                objects.remove(i);
+                                deleted = true;
+                                break;
+                            }
+                        }
 
-                objects.add("", note);
-                noteCount++;
+                        notePos.erase(notePos.begin() + index);
+                        notes.erase(notes.begin() + index);
+                        noteTypes.erase(noteTypes.begin() + index);
+                    }
 
-                std::cout << xPos;
+                    index++;
+                }
+
+                if (!deleted) {
+                    objects::templates::Sprite *note = new objects::templates::Sprite("assets/images/" + type + ".png");
+
+                    notes.push_back(note);
+                    notePos.push_back({cursorXPos, cursorYPos});
+                    noteTypes.push_back(type);
+
+                    objects.add("", note); 
+                }
             }
 
             game::mouseQueue.pop();
@@ -77,6 +145,65 @@ public:
                 cursor->changeTexture("assets/images/" + type + ".png");
                 scrollSfx.play();
             }
+            else if (key == sf::Keyboard::Key::A || key == sf::Keyboard::Key::D) {
+                if (key == sf::Keyboard::Key::A) {
+                    cursorXPos += cursorXPos == 0 ? 30 : -1; 
+                }
+                else {
+                    cursorXPos += cursorXPos == 30 ? -30: 1; 
+                }
+            }
+            else if (key == sf::Keyboard::Key::W || key == sf::Keyboard::Key::S) {
+                if (key == sf::Keyboard::Key::W) {
+                    cursorYPos++;
+                }
+                else if (cursorYPos > 0) {
+                    cursorYPos--;
+                }
+            }
+            else if (key == sf::Keyboard::Key::R || key == sf::Keyboard::Key::F) {
+                if (key == sf::Keyboard::Key::R) {
+                    bpm++;
+                }
+                else {
+                    bpm--;
+                }
+            }
+            else if (key == sf::Keyboard::Key::Escape) {
+                std::ofstream writer;
+                writer.open(map.getMapPath());
+
+                writer << std::to_string(bpm);
+
+                for (int i = 0; i < notes.size(); i++) {
+                    writer << std::endl << noteTypes[i];
+                    writer << std::endl << std::to_string(notePos[i].x);
+                    writer << std::endl << std::to_string(notePos[i].y);
+                }
+                writer.close();
+
+                scenes::menu();
+            }
+            else if (key == sf::Keyboard::Key::Space) {
+                preview = !preview;
+
+                game::music = sf::Music(preview ? map.getSongPath() : "assets/sound/editorbgm.mp3");
+                game::music.setLooping(true);
+                game::music.play();
+
+                if (!preview) {
+                    lastY = -1;
+                }
+                else {
+                    float totalBeats = (float)bpm / 60 * game::music.getDuration().asSeconds();
+                    std::cout << totalBeats;
+                    game::music.setPlayingOffset(sf::seconds(game::music.getDuration().asSeconds() * ((float)cursorYPos / totalBeats) / 4));
+                    yOffset = cursorYPos;
+                }
+
+                clock.restart();
+            }
+
             game::keyQueue.pop();
         }
 
@@ -87,7 +214,7 @@ public:
 
             const float scale = noteSize / cursorSprite->getTexture().getSize().x; 
             cursorSprite->setScale({scale, scale});
-            cursorSprite->setPosition((sf::Vector2f)game::mousePosition);
+            cursorSprite->setPosition({cursorXPos * noteSize / 2, window::window.getSize().y / 2});
             cursorSprite->setColor({255, 255, 255, 150});
         }
 
@@ -99,12 +226,28 @@ public:
             float scale = noteSize / noteSprite->getTexture().getSize().x;
             noteSprite->setScale({scale, scale});
 
-            float xPos = (float)window::window.getSize().x * notePos[index].x;
-            std::cout << index << std::endl;
-            noteSprite->setPosition({xPos, notePos[index].y});
-
             util::setOriginCenter(*noteSprite);
+
+            int xPos = notePos[index].x * noteSize / 2;
+            int yPos = window::window.getSize().y / 2 - notePos[index].y * noteSize / 2;
+            yPos += noteSize * (preview ? yOffset : cursorYPos) / 2;
+
+            noteSprite->setPosition({xPos, yPos});
             index += index == notes.size() - 1 ? -index : 1;
+        }
+
+        if (preview) {
+            yOffset = game::music.getPlayingOffset().asSeconds() * bpm / 60 * 4;
+
+            if ((int)yOffset > lastY) {
+                lastY = yOffset;
+
+                for (int i = 0; i < notes.size(); i++) {
+                    if (notePos[i].y == (int)yOffset && noteTypes[i] == "note") {
+                        beatSfx.play();
+                    }
+                }
+            }
         }
     }
 };

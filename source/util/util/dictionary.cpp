@@ -31,6 +31,15 @@ public:
         return keys.size();
     }
 
+    int find(const Key key) {
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys[i] == key) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     Val &byIndex(const unsigned int index) {
         return vals[index];
     }
