@@ -37,7 +37,6 @@ public:
 
             if (file.path().filename().replace_extension("").string() == "song") {
                 songPath = file.path().string();
-                std::cout << songPath << std::endl;
             }
             else if (file.path().filename().replace_extension("").string() == "cover") {
                 coverPath = file.path().string();
@@ -60,3 +59,5 @@ std::vector<game::Song> game::getSongs() {
 
     return songs;
 }
+
+namespace game { Song *mapToLoad; }

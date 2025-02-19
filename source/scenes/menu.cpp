@@ -9,9 +9,19 @@ class scenes::Menu : public game::Scene {
 private:
     int selectedIndex = 0;
 
-    sf::Font songFont;
+    bool fading = false;
+
     std::vector<game::Song> songs;
-    sf::Music scrollSfx;
+
+    sf::Font songFont = sf::Font("assets/fonts/bold italic.ttf");
+    
+    sf::Music scrollSfx = sf::Music("assets/sound/scroll.mp3");
+
+    objects::BlackFade *fade = new objects::BlackFade();
+
+    objects::EventTimer *titleTimer = new objects::EventTimer(util::doNothing, scenes::title, 1.25);
+    objects::EventTimer *editorTimer = new objects::EventTimer(util::doNothing, scenes::editor, 1.25);
+    objects::EventTimer *levelTimer = new objects::EventTimer(util::doNothing, scenes::level, 1.25);
 
 public:
     void ChangeSong() {
@@ -25,18 +35,19 @@ public:
     Menu() {
         songs = game::getSongs();
 
-        songFont = sf::Font("assets/fonts/bold italic.ttf");
-        scrollSfx = sf::Music("assets/sound/scroll.mp3");
         scrollSfx.setVolume(25);
 
         objects.add("songCover", new objects::SongCover());
         objects.add("line", new objects::templates::Rect({2, 2}, sf::Color::White));
         objects.add("flash", new objects::BgFlash());
-        objects.add("fade", new objects::BlackFade());
+        objects.add("fade", fade);
         objects.add("duration", new objects::templates::Text("00:00", songFont)); 
+        objects.add("titletimer", titleTimer);
+        objects.add("editortimer", editorTimer);
+        objects.add("levektimer", levelTimer);
 
         sf::RectangleShape *line = (sf::RectangleShape*)objects["line"]->getDrawable();
-        ((objects::BlackFade*)objects["fade"])->fadeOut();
+        fade->fadeOut();
 
         sf::Text *duration = (sf::Text*)objects["duration"]->getDrawable();
         duration->setCharacterSize(20);
@@ -56,10 +67,12 @@ public:
     }
 
     void update() override {
+        window::window.setMouseCursorVisible(true);
+
         while (game::keyQueue.size()) {
             const sf::Keyboard::Key key = game::keyQueue.front();
 
-            if ((key == sf::Keyboard::Key::W && selectedIndex != 0) || (key == sf::Keyboard::Key::S && selectedIndex != songs.size() - 1)) {
+            if ((key == sf::Keyboard::Key::W && selectedIndex != 0) || (key == sf::Keyboard::Key::S && selectedIndex != songs.size() - 1) && !fading) {
                 objects::SongText *previous;
                 objects::SongText *current;
                 bool down;
@@ -89,12 +102,20 @@ public:
                 ((objects::BgFlash*)objects["flash"])->flash();
                 ChangeSong();
             }
-            else if (key == sf::Keyboard::Key::F12) {
-                scenes::editor(songs[selectedIndex]);
+            else if (key == sf::Keyboard::Key::F12 && !fading) {
+                fade->fadeIn();
+                editorTimer->start();
+                fading = true;
             }
-            else if (key == sf::Keyboard::Key::Escape) {
-                ((objects::BlackFade*)objects["fade"])->fadeIn();
-                scenes::title();
+            else if (key == sf::Keyboard::Key::Escape && !fading) {
+                fade->fadeIn();
+                titleTimer->start();
+                fading = true;
+            }
+            else if (key == sf::Keyboard::Key::Enter && !fading) {
+                fade->fadeIn();
+                levelTimer->start();
+                fading = true;
             }
 
             game::keyQueue.pop();
@@ -134,5 +155,8 @@ public:
             int yPos = 35 * (i + 1) + textObject->yOffset;
             text->setPosition({xPos, yPos});
         }
+
+        delete game::mapToLoad;
+        game::mapToLoad = new game::Song(songs[selectedIndex].getName());
     }
 };

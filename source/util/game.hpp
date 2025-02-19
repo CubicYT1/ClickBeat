@@ -26,7 +26,7 @@ namespace game {
     std::queue<sf::Mouse::Button> mouseQueue;
     std::vector<InterpolationData> interpolationData;
     sf::Vector2i mousePosition;
-    sf::Clock clock; 
+    sf::Clock sceneClock; 
 
     void update();
     void title();
@@ -38,7 +38,7 @@ namespace game {
     namespace player {
         sf::Color bgColor = {0, 0, 150, 255};
     }
-};
+}
 
 #include "game/object.cpp"
 #include "game/scene.cpp"

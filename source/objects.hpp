@@ -9,6 +9,9 @@ namespace objects {
     class BgFlash;
     class Cursor;
     class BlackFade;
+    class Note;
+    class EventTimer;
+    class Player;
 
     namespace templates {
         class Rect;
@@ -25,5 +28,8 @@ namespace objects {
 #include "objects/titletext.cpp"
 #include "objects/songcover.cpp"
 #include "objects/songtext.cpp"
-#include "objects/bgflash.cpp"
 #include "objects/blackfade.cpp"
+#include "objects/bgflash.cpp"
+#include "objects/note.cpp"
+#include "objects/eventtimer.cpp"
+#include "objects/player.cpp"

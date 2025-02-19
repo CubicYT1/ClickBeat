@@ -5,23 +5,26 @@
 
 #include <iostream>
 
+
+
 class scenes::Title : public game::Scene {
 private:
     bool started = false;
     int alpha = 255;
 
-    sf::Clock clock;
+    objects::BlackFade *fade = new objects::BlackFade();
+
+    objects::EventTimer *menuTimer = new objects::EventTimer(util::doNothing, scenes::menu, 1.25);
 
 public:
     Title() {
         objects.add("logo", new objects::TitleLogo());
         objects.add("text", new objects::TitleText());
         objects.add("flash", new objects::BgFlash());
-        objects.add("fade", new objects::BlackFade());
+        objects.add("fade", fade);
+        objects.add("menutimer", menuTimer);
 
         ((objects::BlackFade*)objects["fade"])->fadeOut();
-
-        clock.reset();
 
         game::music = sf::Music("assets/sound/menu.wav");
         game::music.setLooping(true);
@@ -29,20 +32,16 @@ public:
     }
 
     void update() override {
-        if (clock.getElapsedTime().asSeconds() >= 1) {
-            scenes::menu();
-        }
-
         while (game::keyQueue.size()) {
             sf::Keyboard::Key key = game::keyQueue.front();
 
             if (key == sf::Keyboard::Key::Space && !started) {
                 ((objects::BgFlash*)objects["flash"])->flash();
-                ((objects::BlackFade*)objects["fade"])->fadeIn();
 
                 objects["text"]->visible = false;
-                clock.start();
                 started = true;
+                fade->fadeIn();
+                menuTimer->start();
             }
             game::keyQueue.pop();
         }

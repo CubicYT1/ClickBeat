@@ -41,13 +41,16 @@ private:
 
     objects::templates::Sprite *cursor = new objects::templates::Sprite("assets/images/note.png");
 
+    objects::templates::Rect *line = new objects::templates::Rect({window::window.getSize().x, 2}, sf::Color::White);
+
 public:
     LevelEditor(game::Song map) : map(map) {
-        std::cout << map.getMapPath();
         util::setOriginCenter(*(sf::Sprite*)cursor->getDrawable());
+        line->zIndex = 1;
 
         objects.add("info", info);
         objects.add("cursor", cursor);
+        objects.add("line", line);
 
         game::music = sf::Music("assets/sound/editorbgm.mp3");
         game::music.setLooping(true);
@@ -65,6 +68,7 @@ public:
         }
 
         bpm = std::stoi(line);
+        std::getline(reader, line);
 
         while (!reader.eof()) {
             std::getline(reader, line);
@@ -84,6 +88,8 @@ public:
             objects.add("", note);
         }
         reader.close();
+
+        beatSfx.setVolume(50);
     }
 
     void update() override {
@@ -170,10 +176,18 @@ public:
                 }
             }
             else if (key == sf::Keyboard::Key::Escape) {
+                int noteCount = 0;
+                for (std::string string : noteTypes) {
+                    if (string == "note") {
+                        noteCount++;
+                    }
+                }
+
                 std::ofstream writer;
                 writer.open(map.getMapPath());
 
                 writer << std::to_string(bpm);
+                writer << std::endl << std::to_string(noteCount);
 
                 for (int i = 0; i < notes.size(); i++) {
                     writer << std::endl << noteTypes[i];
@@ -193,11 +207,15 @@ public:
 
                 if (!preview) {
                     lastY = -1;
+
+                    for (objects::templates::Sprite *note : notes) {
+                        note->visible = true;
+                    }
                 }
                 else {
                     float totalBeats = (float)bpm / 60 * game::music.getDuration().asSeconds();
                     std::cout << totalBeats;
-                    game::music.setPlayingOffset(sf::seconds(game::music.getDuration().asSeconds() * ((float)cursorYPos / totalBeats) / 4));
+                    game::music.setPlayingOffset(sf::seconds(game::music.getDuration().asSeconds() * ((float)cursorYPos / totalBeats) / 8));
                     yOffset = cursorYPos;
                 }
 
@@ -216,6 +234,12 @@ public:
             cursorSprite->setScale({scale, scale});
             cursorSprite->setPosition({cursorXPos * noteSize / 2, window::window.getSize().y / 2});
             cursorSprite->setColor({255, 255, 255, 150});
+        }
+
+        /* line */ {
+            sf::RectangleShape *lineShape = (sf::RectangleShape*)line->getDrawable();
+            lineShape->setPosition({0, window::window.getSize().y / 2});
+            lineShape->setSize({window::window.getSize().x, 2});
         }
 
         for (objects::templates::Sprite *note : notes) {
@@ -237,7 +261,7 @@ public:
         }
 
         if (preview) {
-            yOffset = game::music.getPlayingOffset().asSeconds() * bpm / 60 * 4;
+            yOffset = game::music.getPlayingOffset().asSeconds() * bpm / 60 * 8;
 
             if ((int)yOffset > lastY) {
                 lastY = yOffset;
@@ -245,6 +269,7 @@ public:
                 for (int i = 0; i < notes.size(); i++) {
                     if (notePos[i].y == (int)yOffset && noteTypes[i] == "note") {
                         beatSfx.play();
+                        notes[i]->visible = false;
                     }
                 }
             }

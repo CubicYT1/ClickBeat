@@ -5,6 +5,7 @@ namespace util {
     template <typename Key, typename Val> class Dictionary;
 
     void setOriginCenter(sf::Sprite&);
+    void doNothing();
 }
 
 #include "util/dictionary.cpp"

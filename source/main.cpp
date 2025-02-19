@@ -6,14 +6,13 @@
 int main() {
     window::window.setMinimumSize(window::minSize);
     game::currentScene = new scenes::Title();
-    game::clock.start();
     
     while (window::window.isOpen()) {
         window::handleEvents();
         game::update();
         window::render();
         
-        if (game::upcomingScene != nullptr) {
+        if (game::upcomingScene) {
             delete game::currentScene;
             game::currentScene = game::upcomingScene;
             game::upcomingScene = nullptr;
