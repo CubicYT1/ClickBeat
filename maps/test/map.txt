@@ -1,0 +1,8 @@
+140
+0
+fakeNote
+13
+71
+obstacle
+17
+83

@@ -18,7 +18,7 @@ void game::update() {
 
         if ((!subtract && data.decimal >= 1) || (subtract && data.decimal <= -1 )) {
             data.added += data.decimal;
-            *data.reference += data.decimal;
+            *data.reference += (int)data.decimal;
             data.decimal -= (int)data.decimal;
         }
 

@@ -56,7 +56,7 @@ public:
         game::music.setLooping(true);
         game::music.play();
 
-        std::string line;
+        std::string line = "";
         std::ifstream reader;
         reader.open(map.getMapPath());
 
