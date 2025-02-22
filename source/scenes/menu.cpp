@@ -49,7 +49,9 @@ public:
         fileData = "\n\nBPM: " + line;
 
         std::getline(reader, line);
-        fileData += "\n\nNOTES: " + line + "\n\nNPS: " + std::to_string(std::stoi(line) / (int)game::music.getDuration().asSeconds());
+        fileData += "\n\nNOTES: " + line + "\n\nNPS: " + std::to_string(std::stoi(line) / game::music.getDuration().asSeconds());
+
+        reader.close();
     }
 
     Menu() {
@@ -170,7 +172,9 @@ public:
             int minutes = seconds / 60;
             seconds -= 60 * minutes;
 
-            duration->setString("LENGTH: " + std::to_string(minutes) + ":" + std::to_string(seconds) + fileData);
+            bool extraZero = std::to_string(seconds).size() == 1;
+
+            duration->setString("LENGTH: " + std::to_string(minutes) + ":" + (extraZero ? "0" : "") + std::to_string(seconds) + fileData);
         }
         
         for (int i = 0; i < songs.size(); i++) {

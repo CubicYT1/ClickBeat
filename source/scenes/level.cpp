@@ -89,7 +89,7 @@ public:
     }
     
     void levelFail() {
-        if (!failed) {
+        if (!failed && !fading) {
             failed = true;
             game::interpolationData.push_back({&failAlpha, 125, 62});
             restartDelay.start();
@@ -115,8 +115,8 @@ public:
                     for (sf::Sprite *sprite : sprites) {
                         sf::Vector2f scale = sprite->getScale();
 
-                        scale.x /= 1.6;
-                        scale.y /= 1.6;
+                        scale.x /= 1.5;
+                        scale.y /= 1.5;
 
                         sprite->setScale(scale);
                     }
@@ -136,6 +136,13 @@ public:
         }
 
         while (game::keyQueue.size()) {
+            sf::Keyboard::Key key = game::keyQueue.front();
+
+            if (key == sf::Keyboard::Key::Escape && !failed && !fading) {
+                fading = true;
+                fade->fadeIn();
+                menuTimer->start();
+            }
             game::keyQueue.pop();
         }
 
@@ -182,7 +189,7 @@ public:
             yOffset = affector * bpm / 60 * 8;
         }
 
-        /* failVisuals */ {
+        /* fail Visuals */ {
             sf::RectangleShape *rect = (sf::RectangleShape*)redRect->getDrawable();
             sf::Text *text = (sf::Text*)failText->getDrawable();
 
@@ -203,6 +210,9 @@ public:
                 fade->fadeIn();
                 restartDelay.stop();
             }  
+        }
+        else if (fading) {
+            game::music.setPitch(game::music.getPitch() - 1 * game::getDeltaTime());
         }
     }
 };
