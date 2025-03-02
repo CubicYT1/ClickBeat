@@ -1,1 +1,1 @@
-g++ source/main.cpp source/resource/resource.res -o ClickBeat -lsfml-graphics -lsfml-audio -lsfml-system -lsfml-window -mwindows && start ClickBeat
+g++ source/main.cpp source/resource/resource.res -o ClickBeat -lsfml-graphics -lsfml-audio -lsfml-system -lsfml-window -mwindows -static && start ClickBeat
