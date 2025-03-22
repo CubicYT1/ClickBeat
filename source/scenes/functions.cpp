@@ -1,6 +1,8 @@
 #pragma once
 #include "../scenes.hpp"
 
+#include <cstdlib>
+
 static void resetClock() {
     game::sceneClock.restart();
 }

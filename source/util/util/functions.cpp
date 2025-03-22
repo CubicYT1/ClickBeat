@@ -6,3 +6,13 @@ void util::setOriginCenter(sf::Sprite &sprite) {
 }
 
 void util::doNothing() {}
+
+int util::randomInt(const int min, const int max) {
+    static bool first = true;
+    if (first) {
+        first = false;
+        std::srand(std::time(NULL));
+    }
+
+    return min + rand() % (max - min + 1);
+}

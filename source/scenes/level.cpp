@@ -12,6 +12,7 @@ private:
     bool started = false;
     bool fading = false;
     bool failed = false;
+    bool firstFrame = true;
 
     std::vector<objects::Note*> notes;
 
@@ -20,11 +21,11 @@ private:
 
     sf::Font font = sf::Font("assets/fonts/bold italic.ttf");
 
-    sf::Music hitSfx = sf::Music("assets/sound/noteHit.mp3");
+    sf::Music hitSfx = sf::Music("assets/sound/noteHit.wav");
 
     objects::Player *player = new objects::Player();
 
-    objects::EventTimer *startDelay = new objects::EventTimer(util::doNothing, startMusic, 3, true);
+    objects::EventTimer *startDelay = new objects::EventTimer(util::doNothing, startMusic, 3, false);
 
     objects::EventTimer *menuTimer = new objects::EventTimer(util::doNothing, scenes::menu, 1.25);
 
@@ -38,6 +39,8 @@ private:
 
 public:
     Level(game::Song map) {
+        clock.stop();
+
         objects.add("player", player);
         objects.add("startDelay", startDelay);
         objects.add("menutimer", menuTimer);
@@ -86,6 +89,11 @@ public:
         reader.close();
 
         yOffset = -((float)bpm / 60 * 3);
+
+        window::window.setMouseCursorGrabbed(true);
+        
+        clock.start();
+        startDelay->start();
     }
     
     void levelFail() {
@@ -97,15 +105,15 @@ public:
     }
 
     void update() override {
-        window::window.setMouseCursorVisible(false);
-
         const float noteSize = window::window.getSize().x / 15;
         const float hitPoint = (float)window::window.getSize().y * 0.8;
+
+        window::window.setMouseCursorVisible(false);
 
         while (game::mouseQueue.size()) {
             const sf::Mouse::Button button = game::mouseQueue.front();
 
-            if (button == sf::Mouse::Button::Left && !failed) {
+            if (button == sf::Mouse::Button::Left && !failed && !firstFrame) {
                 for (objects::Note *note : notes) { 
                     sf::Sprite noteSprite = *(sf::Sprite*)note->getDrawable();
                     sf::Sprite playerSprite = *(sf::Sprite*)player->getDrawable();
@@ -166,9 +174,10 @@ public:
                 levelFail();
             }
             else if (noteSprite->getGlobalBounds().findIntersection(playerSprite->getGlobalBounds()) && !note->isClicked() && note->getType() == "obstacle") {
-                levelFail();
-
-                note->click();
+                if (!note->isClicked() && note->getType() == "obstacle" && started) {
+                    levelFail();
+                    note->click();
+                }
             }
         }
 
@@ -214,5 +223,7 @@ public:
         else if (fading) {
             game::music.setPitch(game::music.getPitch() - 1 * game::getDeltaTime());
         }
+        
+        firstFrame = false;
     }
 };

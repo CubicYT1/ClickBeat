@@ -89,11 +89,13 @@ public:
         }
 
         ChangeSong();
+
+        window::window.setMouseCursorGrabbed(false);
     }
 
     void update() override {
         window::window.setMouseCursorVisible(true);
-
+        
         while (game::keyQueue.size()) {
             const sf::Keyboard::Key key = game::keyQueue.front();
 

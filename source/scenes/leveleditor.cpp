@@ -52,7 +52,7 @@ public:
         objects.add("cursor", cursor);
         objects.add("line", line);
 
-        game::music = sf::Music("assets/sound/editorbgm.mp3");
+        game::music = sf::Music("assets/sound/editorbgm.flac");
         game::music.setLooping(true);
         game::music.play();
 
@@ -201,7 +201,7 @@ public:
             else if (key == sf::Keyboard::Key::Space) {
                 preview = !preview;
 
-                game::music = sf::Music(preview ? map.getSongPath() : "assets/sound/editorbgm.mp3");
+                game::music = sf::Music(preview ? map.getSongPath() : "assets/sound/editorbgm.flac");
                 game::music.setLooping(true);
                 game::music.play();
 
@@ -225,7 +225,7 @@ public:
             game::keyQueue.pop();
         }
 
-        ((sf::Text*)info->getDrawable())->setString("Type: " + type + " | BPM: " + std::to_string(bpm));
+        ((sf::Text*)info->getDrawable())->setString("Type: " + type + " [Q/E] | BPM: " + std::to_string(bpm) + " [R/F]");
 
         /* cursor */ {
             sf::Sprite* cursorSprite = (sf::Sprite*)cursor->getDrawable();

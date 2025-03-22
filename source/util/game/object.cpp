@@ -12,4 +12,6 @@ public:
     virtual sf::Drawable *getDrawable() {
         return rect;
     }
+
+    virtual ~Object() {}
 };

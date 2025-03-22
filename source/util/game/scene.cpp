@@ -9,7 +9,7 @@ public:
 
     ~Scene() {
         for (int i = 0; i < objects.getLength(); i++) {
-            delete objects.byIndex(i);
+            objects.byIndex(i)->~Object();
         }
     }
 };

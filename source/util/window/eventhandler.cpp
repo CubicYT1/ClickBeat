@@ -9,9 +9,9 @@ void window::handleEvents() {
         }
         else if (const sf::Event::Resized *resizeEvent = event->getIf<sf::Event::Resized>()) {
             sf::FloatRect viewRect({0, 0}, (sf::Vector2f)resizeEvent->size);
-            if (resizeEvent->size.x > (float)resizeEvent->size.y / 9 * 16) {
-                viewRect = sf::FloatRect({0, 0}, {(float)resizeEvent->size.y / 9 * 16, resizeEvent->size.y});
-                window::window.setSize({(float)resizeEvent->size.y / 9 * 16, resizeEvent->size.y});
+            if (resizeEvent->size.x > (float)resizeEvent->size.y / 9 * 20) {
+                viewRect = sf::FloatRect({0, 0}, {(float)resizeEvent->size.y / 9 * 20, resizeEvent->size.y});
+                window::window.setSize({(float)resizeEvent->size.y / 9 * 20, resizeEvent->size.y});
             }
 
             window.setView(sf::View(viewRect));

@@ -6,6 +6,7 @@ namespace util {
 
     void setOriginCenter(sf::Sprite&);
     void doNothing();
+    int randomInt(int, int);
 }
 
 #include "util/dictionary.cpp"

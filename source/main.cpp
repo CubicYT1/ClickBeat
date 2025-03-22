@@ -5,7 +5,10 @@
 
 int main() {
     window::window.setMinimumSize(window::minSize);
+
     game::currentScene = new scenes::Title();
+
+    window::initCircles();
     
     while (window::window.isOpen()) {
         window::handleEvents();
